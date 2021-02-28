@@ -1,0 +1,3 @@
+[deps]
+ClenshawCurtisBessel = "ad06d0e0-4296-4ffc-88c6-3ab5dc676568"
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
