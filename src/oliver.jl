@@ -58,6 +58,21 @@ function assembleρ(OP::OliverProblem{T,N,M}, a, b, YBC) where {T,N,M}
     return ρ
 end
 
-# generic functions should return nothing and thus fail
-function OliverP(OP::OliverProblem, s, i) end
-function OliverR(OP::OliverProblem, i) end
+
+"""
+	OliverP(OP::OliverProblem, s, i)
+
+Computes ``P_s(i)``, the coefficient ``s`` at solution index ``i``.
+"""
+function OliverP(OP::OliverProblem, s, i)
+    throw(ErrorException("You need to implement an OliverP for this problem."))
+end
+
+"""
+	OliverR(OP::OliverProblem, i)
+
+Computes ``R(i)``, the right side of the recurrence relation.
+"""
+function OliverR(OP::OliverProblem, i)
+    throw(ErrorException("You need to implement an OliverR for this problem."))
+end
