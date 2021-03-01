@@ -11,7 +11,8 @@ abstract type OliverProblem{T,N,M} end
 """
     assembleP{T}(OP::OliverProblem{M,N}, a, b) where {M, N}
 
-Generic description of the ``\\mathbf{P}`` matrix within the linear system of Oliver's method.
+Generic description of the ``\\mathbf{P}`` matrix within the linear system of
+Oliver's method. This in equation 3a of Oliver 1968.
 """
 function assembleP(OP::OliverProblem{T,N,M}, a, b) where {T,N,M}
     Psize = b - N - a
@@ -28,7 +29,8 @@ end
 """
     assembleρ{T}(OP::OliverProblem{M,N}, a, b) where {M, N}
 
-Generic description of the ``\\vec{\rho}`` vector within the linear system of Oliver's method.
+Generic description of the ``\\vec{\rho}`` vector within the linear system of
+Oliver's method. This in equation 3b of Oliver 1968.
 """
 function assembleρ(OP::OliverProblem{T,N,M}, a, b, YBC) where {T,N,M}
     Psize = b - N - a

@@ -7,6 +7,5 @@ using SpecialFunctions, HypergeometricFunctions
 include("oliver.jl")
 include("bessel.jl")
 
-export OliverProblem, assembleP, assembleρ
 
 end
