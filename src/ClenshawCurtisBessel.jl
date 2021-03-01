@@ -2,8 +2,11 @@ module ClenshawCurtisBessel
 
 using LinearAlgebra, BandedMatrices
 using SparseArrays, StaticArrays
-using SpecialFunctions, HypergeometricFunctions
+import HypergeometricFunctions
+import ArbNumerics, DoubleFloats, SpecialFunctions
 
+
+include("specialfunctions.jl")
 include("oliver.jl")
 include("bessel.jl")
 

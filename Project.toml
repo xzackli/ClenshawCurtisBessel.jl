@@ -4,10 +4,15 @@ authors = ["Zack Li"]
 version = "0.1.0"
 
 [deps]
+ArbNumerics = "7e558dbc-694d-5a72-987c-6f4ebed21442"
 BandedMatrices = "aae01518-5342-5314-be14-df237901396f"
+DoubleFloats = "497a8b3b-efae-58df-a0af-a86822472b78"
 HypergeometricFunctions = "34004b35-14d8-5ef3-9330-4cdb6864b03a"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+SpecialFunctions = "276daf66-3868-5448-9aa4-cd146d93841b"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+TimerOutputs = "a759f4b9-e2f1-59dc-863e-4aeb61b1ea8f"
 
 [compat]
 julia = "1.5"

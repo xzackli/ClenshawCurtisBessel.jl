@@ -45,7 +45,7 @@ using Test
     end
 end
 
-@testset "Moments" begin
+@testset "Moment Boundary Conditions" begin
     @test ClenshawCurtisBessel.bessel_moment_G(10, 15/2, 2) ≈ 0.007089503058490749
     @test ClenshawCurtisBessel.bessel_moment_G(100, 15/2, 2) ≈ 1.482273470904133e24
     @test ClenshawCurtisBessel.bessel_moment_G(70, 59/2, 1) ≈ 2.695679919047616e-43

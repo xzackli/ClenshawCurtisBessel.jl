@@ -14,9 +14,9 @@ abstract type OliverProblem{T,N,M} end
 Generic description of the ``\\mathbf{P}`` matrix within the linear system of
 Oliver's method. This in equation 3a of Oliver 1968.
 """
-function assembleP(OP::OliverProblem{T,N,M}, a, b) where {T,N,M}
+function assembleP(Tmat, OP::OliverProblem{T,N,M}, a, b) where {T,N,M}
     Psize = b - N - a
-    𝐏 = BandedMatrix{T}(undef, (Psize, Psize), (N-M,M))
+    𝐏 = BandedMatrix{Tmat}(undef, (Psize, Psize), (N-M,M))
     for row in 1:Psize
         for col in max(1, row-N+M):min(row + M, Psize)
             Δm = col - row
@@ -25,6 +25,7 @@ function assembleP(OP::OliverProblem{T,N,M}, a, b) where {T,N,M}
     end
     return 𝐏
 end
+assembleP(OP::OliverProblem{T,N,M}, a, b) where {T,N,M} = assembleP(T,OP,a,b)
 
 """
     assembleρ{T}(OP::OliverProblem{M,N}, a, b) where {M, N}
@@ -32,9 +33,9 @@ end
 Generic description of the ``\\vec{\rho}`` vector within the linear system of
 Oliver's method. This in equation 3b of Oliver 1968.
 """
-function assembleρ(OP::OliverProblem{T,N,M}, a, b, YBC) where {T,N,M}
+function assembleρ(Tmat, OP::OliverProblem{T,N,M}, a, b, YBC) where {T,N,M}
     Psize = b - N - a
-    ρ = zeros(T, Psize)
+    ρ = zeros(Tmat, Psize)
 
     for row in 1:(N-M)
         Σ = zero(T)
@@ -59,7 +60,8 @@ function assembleρ(OP::OliverProblem{T,N,M}, a, b, YBC) where {T,N,M}
 
     return ρ
 end
-
+assembleρ(OP::OliverProblem{T}, a, b, YBC) where T =
+    assembleρ(T, OP, a, b, YBC)
 
 """
 	OliverP(OP::OliverProblem, s, i)
