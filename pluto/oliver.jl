@@ -12,7 +12,7 @@ md"""We're implementing the method of [Oliver 1968](https://link.springer.com/ar
 ```math
 P_n(i) y(i) + P_{n-1}(i) y(i+1) + \cdots + P_0(i) y(i+n) = R(i)
 ```
-where the recurrence is unstable in both the forward and backwards solutions. Oliver's method transforms an unstable forward recurrence into a boundary value problem. This can be accomplished by solving a linear system, 
+where the recurrence is unstable in both the forward and backwards solutions. Oliver's method transforms an unstable forward recurrence into a boundary value problem. This can be accomplished by solving a linear system,
 
 ```math
 \mathbf{P} \vec{y} = \vec{\rho}.
@@ -103,12 +103,12 @@ assembleP(Example61161{Float64,3,1}(), 0, 10)
 """
 	assembleρ{T}(OP::OliverProblem{M,N}, a, b) where {M, N}
 
-Generic description of the ``\\vec{\rho}`` vector within the linear system of Oliver's method.
+Generic description of the ``\\vec{\\rho}`` vector within the linear system of Oliver's method.
 """
 function assembleρ(OP::OliverProblem{T,N,M}, a, b, YBC) where {T,N,M}
 	Psize = b - N - a
 	ρ = zeros(T, Psize)
-	
+
 	for row in 1:(N-M)
 		Σ = zero(T)
 		for s in 1:(N - M - row + 1)
@@ -117,19 +117,19 @@ function assembleρ(OP::OliverProblem{T,N,M}, a, b, YBC) where {T,N,M}
 		end
 		ρ[row] = OliverR(OP, a + row) - Σ
 	end
-	
+
 	rₛ, rₑ = (b - N - M + 1 - a), (b - N - a)
 	for row in rₛ:rₑ
 		row_from_end = rₑ - row + 1
 		Σ = zero(T)
 		for s in 0:(M - row_from_end)
 			# every row, decrease by 1 the sum UB, YBC arg, P arg
-			Σ = Σ + OliverP(OP, s, b - N - row_from_end + 1) * 
+			Σ = Σ + OliverP(OP, s, b - N - row_from_end + 1) *
 				YBC[b - s - row_from_end + 1]
 		end
 		ρ[row] = OliverR(OP, a+row) - Σ
 	end
-	
+
 	return ρ
 end
 
@@ -144,7 +144,7 @@ begin
 	ex = Example61161{Float64,n,m}()
 	P = assembleP(ex, a, b)
 	ρ = assembleρ(ex, a, b, YBC)
-	
+
 	# """$(P * y.((a+n-m+1):(b-m))) $(ρ)"""
 	sol = P \ ρ
 	ref = y.((a+n-m+1):(b-m))

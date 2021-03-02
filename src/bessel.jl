@@ -28,11 +28,11 @@ M₃(a, ν) = (
 
 
 @doc raw"""
-    Mₖ_asymptotic(a::T, ν, k) where T
+    Mk_asymptotic(a::T, ν, k) where T
 
 Computes a modified moment using asymptotics as ``k \rightarrow \infty``.
 """
-function Mₖ_asymptotic(a::T, ν, k) where T
+function Mk_asymptotic(a::T, ν, k) where T
 
     ϕ0 = SA[
         J(ν, a),
@@ -70,6 +70,8 @@ end
 
 
 """
+    BrandersPiessensProblem(a, ν)
+
 Construct a boundary value problem from the modified moment recurrence relation.
 
 `N` and `M` correspond to the total number of specified initial boundary conditions,
@@ -97,6 +99,9 @@ M_{k + 2}(a, \nu) + \left[ 4 \nu^2 - 2(k+4) + 4 \right] M_{k+3}(a,\nu) \\
 &+ \left[ (k+7)^2 - \nu^2 - \frac{a^2}{4} \right]M_{k+6} + \frac{a^2}{16} M_{k+8}(a,\nu) \quad = 0
 \end{aligned}
 ```
+
+Note that the coefficient indices decrease ``P_8, P_7, \cdots, P_0`` as the ``M_k``
+index increases.
 """
 function OliverP(
         OP::BrandersPiessensProblem{T}, s, k) where T
@@ -122,30 +127,63 @@ function OliverP(
     end
 end
 
+
 """
     OliverR(OP::BrandersPiessensProblem{T}, i)
 
 Computes ``R(i)``, the right side of the recurrence relation.
 """
-OliverR(
-    OP::BrandersPiessensProblem{T}, i) where T = zero(T)
+OliverR(OP::BrandersPiessensProblem{T}, i) where T = zero(T)
 
-function generate_BC(OP::BrandersPiessensProblem{T,8,2}, maxorder) where T
+
+"""
+    generate_BC(OP::BrandersPiessensProblem{T,8,2}, kmax::Int) where T
+
+Generates the boundary conditions required for Oliver's method to solve
+the boundary value problem posed Branders & Piessens.
+
+# Arguments:
+- `OP::BrandersPiessensProblem{T,8,2}`: problem parameters
+- `kmax`: maximum order ``k`` to compute.
+
+# Returns:
+- `Tuple{Int,OffsetVector}`: the maximum index, and a sparse offset array
+     with the boundaries.
+"""
+function generate_BC(OP::BrandersPiessensProblem{T,8,2}, kmax::Int) where T
     a, ν = OP.a, OP.ν
-    MBC = Dict{Int,T}()
+    ℓ = max(kmax+1, Int(ceil(a + 10)))  # added +1, never use asymptotic for kmax
+    Mbc = OffsetVector(spzeros(T,ℓ+5), -3:(ℓ+1))
 
-    MBC[-3] = M₃(a, ν)
-    MBC[-2] = M₂(a, ν)
-    MBC[-1] = M₁(a, ν)
-    MBC[ 0] = M₀(a, ν)
-    MBC[ 1] = M₁(a, ν)
-    MBC[ 2] = M₂(a, ν)
-    MBC[ 3] = M₃(a, ν)
+    Mbc[-3] = M₃(a, ν)
+    Mbc[-2] = M₂(a, ν)
+    Mbc[-1] = M₁(a, ν)
+    Mbc[ 0] = M₀(a, ν)
+    Mbc[ 1] = M₁(a, ν)
+    Mbc[ 2] = M₂(a, ν)
+    Mbc[ 3] = M₃(a, ν)
 
-    # Branders & Piessens call the max moment N, we call it maxorder
-    ℓ = max(maxorder, Int(ceil(a + 10)))
-    MBC[ℓ] = Mₖ_asymptotic(a, ν, ℓ)
-    MBC[ℓ+1] = Mₖ_asymptotic(a, ν, ℓ+1)
+    Mbc[ℓ] = Mk_asymptotic(a, ν, ℓ)
+    Mbc[ℓ+1] = Mk_asymptotic(a, ν, ℓ+1)
 
-    return ℓ+1, MBC
+    return ℓ+1, Mbc
+end
+
+
+
+function momentM(Tout::Type{<:Number}, a::T, nu::T, kmax::Int, kbuffer=100) where T
+    bpp = BrandersPiessensProblem{T,8,2}(a, nu)
+    upperindex, Mbc = generate_BC(bpp, kmax+kbuffer)
+    ρ = assembleρ(bpp, -3, upperindex, Mbc)
+    𝐏 = assembleP(bpp, -3, upperindex)
+
+    sol = OffsetVector(Array{Tout}(undef,kmax+1), 0:kmax)
+    for i in 0:3
+        sol[i] = Mbc[i]
+    end
+    res = qr(𝐏) \ ρ
+    for i in 4:kmax
+        sol[i] = Tout(res[i-3])
+    end
+    return sol
 end

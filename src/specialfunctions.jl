@@ -1,4 +1,8 @@
 
+# These definitions are necessary to ensure that the right functions are called for
+# different input types. In particular, the besselj for non-integer orders is not
+# available for DoubleFloat, so we use the one from ArbNumerics.
+
 # define operations on ArbFloat
 HypergeometricFunctions.logabsgamma(x::ArbNumerics.ArbFloat) =
 	ArbNumerics.lgamma(abs(x)), sign(gamma(x))

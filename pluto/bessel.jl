@@ -17,7 +17,7 @@ using DoubleFloats
 using LinearAlgebra
 
 # ╔═╡ 386fbd2c-7a2a-11eb-051b-13b127ecfc30
-struct BrandersPiessensProblem{T,N,M} <: ClenshawCurtisBessel.OliverProblem{T,N,M} 
+struct BrandersPiessensProblem{T,N,M} <: ClenshawCurtisBessel.OliverProblem{T,N,M}
 	a::T
 	ν::T
 end
@@ -72,7 +72,7 @@ ClenshawCurtisBessel.OliverR(
 	OP::BrandersPiessensProblem{T}, i) where T = zero(T)
 
 # ╔═╡ dbf33dbe-7a54-11eb-0410-9b91fb2d22c8
-import ClenshawCurtisBessel: M₀, M₁, M₂, M₃, Mₖ_asymptotic
+import ClenshawCurtisBessel: M₀, M₁, M₂, M₃, Mk_asymptotic
 
 # ╔═╡ 97550070-7a54-11eb-3df8-6ff173e946fc
 function generate_BC(OP::BrandersPiessensProblem{T,8,2}, maxorder) where T
@@ -85,12 +85,12 @@ function generate_BC(OP::BrandersPiessensProblem{T,8,2}, maxorder) where T
 	MBC[ 1] = M₁(a, ν)
 	MBC[ 2] = M₂(a, ν)
 	MBC[ 3] = M₃(a, ν)
-	
+
 	# Branders & Piessens call the max moment N, we call it maxorder
 	ℓ = max(maxorder, Int(ceil(a + 10)))
 	print(typeof(a), " ", a, " ", ν, " ", ℓ, "\n")
-	MBC[ℓ] = Mₖ_asymptotic(a, ν, ℓ)
-	MBC[ℓ+1] = Mₖ_asymptotic(a, ν, ℓ+1)
+	MBC[ℓ] = Mk_asymptotic(a, ν, ℓ)
+	MBC[ℓ+1] = Mk_asymptotic(a, ν, ℓ+1)
 	return ℓ+1, MBC
 end
 
@@ -99,12 +99,12 @@ import ClenshawCurtisBessel: assembleP, assembleρ
 # using BandedMatrices
 
 # ╔═╡ 3be2f3f0-7a63-11eb-248f-7727012b9b60
-HypergeometricFunctions.logabsgamma(x::Double64) = 
+HypergeometricFunctions.logabsgamma(x::Double64) =
 	DoubleFloats.loggamma(abs(x)), sign(gamma(x))
 
 # ╔═╡ 6bbd6c44-7a70-11eb-3859-bd57ba21c45d
 # SpecialFunctions.besselj(x::Double64, y::AbstractFloat) =
-# 	SpecialFunctions.besselj(Float64(x), Float64(x)) 
+# 	SpecialFunctions.besselj(Float64(x), Float64(x))
 
 # ╔═╡ 972d5cdc-7a54-11eb-0619-85688bb73fcf
 @time begin

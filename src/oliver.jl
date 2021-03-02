@@ -1,7 +1,9 @@
 
 """
-Construct a boundary value problem from a recurrence relation. The functions for
-coefficients and the right side dispatch on this abstract type.
+    abstract type OliverProblem{T,N,M} end
+
+Abstract type for constructing a boundary value problem from a recurrence
+relation. The functions for coefficients and the right side dispatch.
 
 `N` and `M` correspond to the total number of specified initial boundary conditions,
 and the number specified on the end of the recurrence, respectively.
@@ -30,7 +32,7 @@ assembleP(OP::OliverProblem{T,N,M}, a, b) where {T,N,M} = assembleP(T,OP,a,b)
 """
     assembleρ{T}(OP::OliverProblem{M,N}, a, b) where {M, N}
 
-Generic description of the ``\\vec{\rho}`` vector within the linear system of
+Generic description of the ``\\vec{\\rho}`` vector within the linear system of
 Oliver's method. This in equation 3b of Oliver 1968.
 """
 function assembleρ(Tmat, OP::OliverProblem{T,N,M}, a, b, YBC) where {T,N,M}
