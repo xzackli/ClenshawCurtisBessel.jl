@@ -1,5 +1,6 @@
 using ClenshawCurtisBessel
 using Test
+using DoubleFloats
 
 # """
 # Consider an example recurrence relation, which we will call `Example61161`
