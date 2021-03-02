@@ -78,13 +78,13 @@ we're computing on, `a` is the parameter in the Bessel function Jᵥ(ax), and `�
 the order.
 """
 struct BrandersPiessensProblem{T,N,M} <: OliverProblem{T,N,M}
-	a::T
-	ν::T
+    a::T
+    ν::T
 end
 
 
 @doc raw"""
-	ClenshawCurtisBessel.OliverP(OP::BrandersPiessensProblem{T}, s, k) where T
+    ClenshawCurtisBessel.OliverP(OP::BrandersPiessensProblem{T}, s, k) where T
 
 Computes the modifed moments from Branders & Piessens 1987.
 
@@ -99,53 +99,53 @@ M_{k + 2}(a, \nu) + \left[ 4 \nu^2 - 2(k+4) + 4 \right] M_{k+3}(a,\nu) \\
 ```
 """
 function OliverP(
-		OP::BrandersPiessensProblem{T}, s, k) where T
-	a, ν = OP.a, OP.ν
-	if s == 8
-		return a^2/16
-	elseif s == 7
-		return zero(T)
-	elseif s == 6
-		return (k+1)^2 - ν^2 - a^2/4
-	elseif s == 5
-		return 4ν^2 - 2(k+4) + 4
-	elseif s == 4
-		return -(2 * (k+4)^2 - 6 + 6ν^2 - 3 * a^2 / 8)
-	elseif s == 3
-		return 4ν^2 + 2(k+4) + 4
-	elseif s == 2
-		return (k+7)^2 - ν^2 - a^2/4
-	elseif s == 1
-		return zero(T)
-	elseif s == 0
-		return a^2/16
-	end
+        OP::BrandersPiessensProblem{T}, s, k) where T
+    a, ν = OP.a, OP.ν
+    if s == 8
+        return a^2/16
+    elseif s == 7
+        return zero(T)
+    elseif s == 6
+        return (k+1)^2 - ν^2 - a^2/4
+    elseif s == 5
+        return 4ν^2 - 2(k+4) + 4
+    elseif s == 4
+        return -(2 * (k+4)^2 - 6 + 6ν^2 - 3 * a^2 / 8)
+    elseif s == 3
+        return 4ν^2 + 2(k+4) + 4
+    elseif s == 2
+        return (k+7)^2 - ν^2 - a^2/4
+    elseif s == 1
+        return zero(T)
+    elseif s == 0
+        return a^2/16
+    end
 end
 
 """
-	OliverR(OP::BrandersPiessensProblem{T}, i)
+    OliverR(OP::BrandersPiessensProblem{T}, i)
 
 Computes ``R(i)``, the right side of the recurrence relation.
 """
 OliverR(
-	OP::BrandersPiessensProblem{T}, i) where T = zero(T)
+    OP::BrandersPiessensProblem{T}, i) where T = zero(T)
 
 function generate_BC(OP::BrandersPiessensProblem{T,8,2}, maxorder) where T
-	a, ν = OP.a, OP.ν
-	MBC = Dict{Int,T}()
+    a, ν = OP.a, OP.ν
+    MBC = Dict{Int,T}()
 
-	MBC[-3] = M₃(a, ν)
-	MBC[-2] = M₂(a, ν)
-	MBC[-1] = M₁(a, ν)
-	MBC[ 0] = M₀(a, ν)
-	MBC[ 1] = M₁(a, ν)
-	MBC[ 2] = M₂(a, ν)
-	MBC[ 3] = M₃(a, ν)
+    MBC[-3] = M₃(a, ν)
+    MBC[-2] = M₂(a, ν)
+    MBC[-1] = M₁(a, ν)
+    MBC[ 0] = M₀(a, ν)
+    MBC[ 1] = M₁(a, ν)
+    MBC[ 2] = M₂(a, ν)
+    MBC[ 3] = M₃(a, ν)
 
-	# Branders & Piessens call the max moment N, we call it maxorder
+    # Branders & Piessens call the max moment N, we call it maxorder
     ℓ = max(maxorder, Int(ceil(a + 10)))
     MBC[ℓ] = Mₖ_asymptotic(a, ν, ℓ)
     MBC[ℓ+1] = Mₖ_asymptotic(a, ν, ℓ+1)
 
-	return ℓ+1, MBC
+    return ℓ+1, MBC
 end

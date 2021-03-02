@@ -20,4 +20,5 @@ makedocs(;
 
 deploydocs(;
     repo="github.com/xzackli/ClenshawCurtisBessel.jl",
+    devbranch = "main"
 )
