@@ -1,13 +1,13 @@
 using ClenshawCurtisBessel
 using Test
 
-"""
-Consider an example recurrence relation, which we will call `Example61161`
-```math
-6 y(s) - 11 y(s+1) + 6 y(s+2) - y(s+3) = 0.
-```
-with initial conditions ``y(1) = 2``, ``y(2)=5``, and ``y(3) = 15``.
-"""
+# """
+# Consider an example recurrence relation, which we will call `Example61161`
+# ```math
+# 6 y(s) - 11 y(s+1) + 6 y(s+2) - y(s+3) = 0.
+# ```
+# with initial conditions ``y(1) = 2``, ``y(2)=5``, and ``y(3) = 15``.
+# """
 @testset "Oliver's Method" begin
     y61161(s) = 1 - 2^(s-1) + 2 * 3^(s-1)
     struct Example61161{T,N,M} <: ClenshawCurtisBessel.OliverProblem{T,N,M} end
@@ -69,6 +69,44 @@ end
 end
 
 
-@testset "Moments" begin
+@testset "Double64 Raw Moments" begin
+	CCB = ClenshawCurtisBessel
+    bpp = CCB.BrandersPiessensProblem{Double64,8,2}(10.0, 3 + 1/2)
+	indexBC, MBC = CCB.generate_BC(bpp, 256)
+	ρ = CCB.assembleρ(bpp, -3, indexBC, MBC)
+	𝐏 = CCB.assembleP(bpp, -3, indexBC)
+	sol = qr(𝐏) \ ρ
+	ref = big"0.0002069511037367724863632484164263304887654"
+	@test (sol[11] .- ref) ./ ref < 1e-15
 
+    bpp = CCB.BrandersPiessensProblem{Double64,8,2}(10.0, 3)
+	indexBC, MBC = CCB.generate_BC(bpp, 256)
+	ρ = CCB.assembleρ(bpp, -3, indexBC, MBC)
+	𝐏 = CCB.assembleP(bpp, -3, indexBC)
+	sol = qr(𝐏) \ ρ
+	ref = big"-0.0001955581634668262545942178152189286110836"
+	@test (sol[11] .- ref) ./ ref < 1e-15
+	ref = big"-0.00009457154862533141412967956613252113399756"
+	@test (sol[16] .- ref) ./ ref < 1e-15
+	ref = big"-0.00001631452917562497345315040327964024786504"
+	@test (sol[40] .- ref) ./ ref < 1e-15
+end
+
+@testset "Float64 Raw Moments" begin
+	CCB = ClenshawCurtisBessel
+    bpp = CCB.BrandersPiessensProblem{Float64,8,2}(10.0, 3 + 1/2)
+	indexBC, MBC = CCB.generate_BC(bpp, 256)
+	ρ = CCB.assembleρ(bpp, -3, indexBC, MBC)
+	𝐏 = CCB.assembleP(bpp, -3, indexBC)
+	sol = qr(𝐏) \ ρ
+	ref = big"0.0002069511037367724863632484164263304887654"
+	@test (sol[11] .- ref) ./ ref < 1e-6
+
+    bpp = CCB.BrandersPiessensProblem{Float64,8,2}(10.0, 3)
+	indexBC, MBC = CCB.generate_BC(bpp, 256)
+	ρ = CCB.assembleρ(bpp, -3, indexBC, MBC)
+	𝐏 = CCB.assembleP(bpp, -3, indexBC)
+	sol = qr(𝐏) \ ρ
+	ref = big"-0.0001955581634668262545942178152189286110836"
+	@test (sol[11] .- ref) ./ ref < 1e-6
 end
