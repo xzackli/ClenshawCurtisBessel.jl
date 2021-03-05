@@ -20,11 +20,9 @@ M₀(a, ν) = bessel_moment_G(0, ν, a) / a
 M₁(a, ν) = ((2/a) * bessel_moment_G(1, ν, a) - bessel_moment_G(0, ν, a)) / a
 M₂(a, ν) = ((8/a^2)*bessel_moment_G(2, ν, a) -
     (8/a)*bessel_moment_G(1, ν, a) + bessel_moment_G(0, ν, a)) / a
-M₃(a, ν) = (
-    (32/a^3) * bessel_moment_G(3, ν, a) -
+M₃(a, ν) = ((32/a^3) * bessel_moment_G(3, ν, a) -
     (48/a^2) * bessel_moment_G(2, ν, a) +
-    (18/a) * bessel_moment_G(1, ν, a) - bessel_moment_G(0, ν, a)
-) / a
+    (18/a) * bessel_moment_G(1, ν, a) - bessel_moment_G(0, ν, a)) / a
 
 
 @doc raw"""

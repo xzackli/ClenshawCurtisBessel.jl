@@ -1,7 +1,0 @@
-using ClenshawCurtisBessel
-using ClenshawCurtisBessel: BrandersPiessensProblem, generate_BC, assembleρ, assembleP
-using DoubleFloats
-using HypergeometricFunctions
-using LinearAlgebra
-using ArbNumerics
-using TimerOutputs
